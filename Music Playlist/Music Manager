@@ -1,0 +1,106 @@
+// Abdirahim Mohamed
+// 4/21/2022
+
+
+import java.util.*;
+
+// Class Comment: This program is known as the Music Playlist, 
+// and it gives you chance to skip/ remove songs in the playlist 
+// and also see the songs that you've removed in the recently removed section.
+// you are also given the choice to shuffle the playlist if you want.
+
+public class MusicManager {
+    private MusicNode playlistFront; // this the the front of the playlist
+    private MusicNode removeFront; // the front of the 
+
+    public MusicManager(List < String > songs) {
+        if (songs.size() == 0) {
+            throw new IllegalArgumentException();
+        }
+        int music = 1;
+        playlistFront = new MusicNode(songs.get(0));
+        MusicNode current = playlistFront;
+
+        for (music = 1; music <= songs.size() - 1; music++) {
+            current.next = new MusicNode(songs.get(music));
+            current = current.next;
+        }
+    }
+    // this method is what prints the song in the playlist, one per line and 
+    // indented by four spaces
+    public void printCurrent() {
+        for (MusicNode current = playlistFront; current != null; current = current.next) {
+            System.out.println("    " + current.song);
+        }
+
+    }
+    // this method is what removes the song in the playlist, one per line
+    // and the most recently removed song appears first. 
+    public void printRemoved() {
+        for (MusicNode removed = removeFront; removed != null; removed = removed.next) {
+            System.out.println("    " + removed.song);
+        }
+
+    }
+    // This  returns a true method if the song is in the playlist, 
+    // or returns a false if it isn't. It also ignores whether if its lower
+    // or uppercase.
+    public boolean currentContains(String song) {
+        for (MusicNode current = playlistFront; current != null; current = current.next) {
+            if (current.song.equalsIgnoreCase(song)) {
+                return true;
+            }
+        }
+        return false;
+    }
+    // this returns true if the song is in the list of removed songs,
+    // or false if it isn't. Also ignores whether if its lower or
+    // uppercase. 
+    public boolean removedContains(String song) {
+        for (MusicNode removed = removeFront; removed != null; removed = removed.next) {
+            if (removed.song.equalsIgnoreCase(song)) {
+                return true;
+            }
+        }
+        return false;
+    }
+    // boolean method that returns true if more than one song was left on the current playlist.
+    public boolean hasSongs() {
+        return playlistFront != null;
+    }
+    // this string method returns the next song, or null if there aren't any songs. 
+    public String nextSong() {
+        if (hasSongs()) {
+            return playlistFront.song;
+        }
+        return null;
+    }
+    // this method removes the song and puts it to the back of the list. 
+    // The order of the songs stay the same, with the removed songs going to the back
+    // when comparing the songs, the case is ignored. 
+    public void remove(String song) {
+        if (playlistFront == null) {
+            throw new IllegalStateException();
+        }
+        if (!currentContains(song)) {
+            throw new IllegalArgumentException();
+        }
+        MusicNode temporary = null;
+
+        if (playlistFront.song.equalsIgnoreCase(song)) {
+            temporary = playlistFront;
+            playlistFront = playlistFront.next;
+        } else {
+            MusicNode current = playlistFront;
+            while (current != null && current.next != null) {
+                if (current.next.song.equalsIgnoreCase(song)) {
+                    temporary = current.next;
+                    current.next = current.next.next;
+                }
+                current = current.next;
+            }
+        }
+        temporary.next = removeFront;
+        removeFront = temporary;
+    }
+}
