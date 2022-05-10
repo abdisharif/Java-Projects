@@ -1,0 +1,105 @@
+// Abdirahim Mohamed
+// 4/27/2022
+
+// Class Comment: This program is known as the Letter Inventory, 
+// where you implement an abstraction class that is used to keep track of 
+// an inventory of letters in the English alphabet. We take in a string of letters 
+// and count how many "A's" "B's" and "C's" we have along with other letters. 
+
+public class LetterInventory {
+   private int size; // this counts the number of characters in the data
+   private int[] inventory; // this tallys the number of each character in the data
+   // the letter inventory is not case sensitive, which is why I use .equalsIgnoreCase
+   public static final int CHARACTERS = 26; //this makes characters equal to 26
+
+   //this constructor makes everything equal to 0; makes inventory empty
+   public LetterInventory() { 
+      inventory = new int[CHARACTERS];
+      size = 0; 
+   }
+
+   //this counts the number of characters(letters) in the data
+   public LetterInventory(String data) { 
+      this();
+      data = data.toLowerCase();
+      for (int i = 0; i < data.length() ; i++) {
+         if (data.charAt(i) - 'a' >= 0 && 
+         data.charAt(i) - 'a' < CHARACTERS) {
+            int container = data.charAt(i) - 'a';
+            size++;
+            inventory[container]++;
+         }
+      }
+   }
+   //this method returns a number of how many 
+   //characters are in the inventory
+    public int get(char Letter) {
+      char character = Character.toLowerCase(Letter);
+      if (!Character.isLetter(character)) {
+         throw new IllegalArgumentException();
+      }
+      int list = character - 'a';
+      return inventory[list];
+   }
+   //this method sets a count for each letter 
+   //with value and throws an IllegalArgumentException if its not a letter
+    public void set(char letter, int value) {
+      letter = Character.toLowerCase(letter);
+      if (value < 0 || !Character.isLetter(letter)) {
+          throw new IllegalArgumentException();
+      }
+      size -= inventory[letter - 'a'];
+      inventory[letter - 'a'] = value;
+      size += value;
+
+   }
+   // this method returns the total of all the sum in the inventory.
+   // the sum is stored and is returned rather than computing it everytime its called. 
+    public int size() {
+       return size; 
+   }
+   // this method returns true whenever the inventory is empty.
+    public boolean isEmpty() {
+       return size == 0; 
+   }
+
+    public String toString() {
+       if (size == 0) {
+          return "[]";
+       } else {
+          String outcome = "[";
+          for(int i = 0; i < CHARACTERS; i++) {
+             char character = (char) ('a' + i);
+             for(int k = 0; k < inventory[i]; k++) {
+                outcome += character;
+             }
+          }
+          return outcome + ']';
+       }
+    }
+
+   //this method creates a new letter inventory 
+   //that adds each of the character together in the inventory. 
+    public LetterInventory add(LetterInventory other) {
+       LetterInventory overall = new LetterInventory("");
+       for (int i = 0; i <= CHARACTERS - 1; i++) {
+           overall.inventory[i] = inventory[i] + other.inventory[i];
+           overall.size += overall.inventory[i];
+       }
+       return overall; 
+   }
+
+//this last method shows the difference between both LetterInventories 
+    public LetterInventory subtract(LetterInventory other) {
+       LetterInventory decrease = new LetterInventory("");
+       for (int i = 0; i <= CHARACTERS - 1; i++) {
+           char character = (char) ('a' + i);
+           int tally = inventory[i] - other.inventory[i];
+           if (tally < 0) {
+              return null; 
+           }
+           decrease.set(character, tally);
+       }
+       return decrease; 
+   }
+}
